@@ -1,0 +1,15 @@
+controller.log
+controller-error.log
+window-state.json
+*.zip
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules/
+
+# Never commit Codex or browser profile data.
+.codex/
+auth.json
+*User Data*/
+
