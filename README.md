@@ -88,17 +88,20 @@ Then:
 
 ## Hermes and other agents
 
-One-shot Hermes command:
+FocusFlow includes a native Hermes Agent plugin. Copy `hermes-plugin` to:
+
+```text
+%USERPROFILE%\.hermes\plugins\focusflow
+```
+
+Restart Hermes after installing it. The plugin uses Hermes's official
+`pre_llm_call`, `post_llm_call`, and `on_session_finalize` lifecycle hooks, so
+it works in both CLI and gateway sessions.
+
+The older one-shot wrapper is also available:
 
 ```powershell
 & "$HOME\.focus-flow\hermes-focus.ps1" "your prompt here"
-```
-
-Other agents can call:
-
-```powershell
-powershell.exe -NoProfile -File "$HOME\.focus-flow\event.ps1" start
-powershell.exe -NoProfile -File "$HOME\.focus-flow\event.ps1" stop
 ```
 
 ## Privacy and security
@@ -138,4 +141,3 @@ continue learning from and maintaining it.
 ## License
 
 [MIT](LICENSE)
-

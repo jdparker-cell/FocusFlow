@@ -1,0 +1,8 @@
+name: focusflow
+version: 1.0.0
+description: Connect Hermes Agent turns to the local FocusFlow desktop automation.
+provides_hooks:
+  - pre_llm_call
+  - post_llm_call
+  - on_session_finalize
+

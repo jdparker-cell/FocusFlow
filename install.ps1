@@ -5,6 +5,11 @@ $startupDirectory = [Environment]::GetFolderPath("Startup")
 $shortcutPath = Join-Path $startupDirectory "FocusFlow.lnk"
 $codexDirectory = Join-Path $HOME ".codex"
 $hooksPath = Join-Path $codexDirectory "hooks.json"
+$hermesHome = if ($env:HERMES_HOME) {
+    $env:HERMES_HOME
+} else {
+    Join-Path $HOME ".hermes"
+}
 
 New-Item -ItemType Directory -Force -Path $installDirectory | Out-Null
 New-Item -ItemType Directory -Force -Path $codexDirectory | Out-Null
@@ -19,6 +24,21 @@ if (Test-Path -LiteralPath $extensionDestination) {
     Remove-Item -LiteralPath $extensionDestination -Recurse -Force
 }
 Copy-Item -LiteralPath $extensionSource -Destination $extensionDestination -Recurse -Force
+
+$hermesPluginSource = Join-Path $PSScriptRoot "hermes-plugin"
+if (Test-Path -LiteralPath $hermesPluginSource) {
+    $hermesPluginDestination = Join-Path $hermesHome "plugins\focusflow"
+    New-Item -ItemType Directory -Force -Path $hermesPluginDestination | Out-Null
+    Copy-Item -LiteralPath "$hermesPluginSource\*" `
+        -Destination $hermesPluginDestination `
+        -Recurse `
+        -Force
+
+    $hermes = Get-Command hermes -ErrorAction SilentlyContinue
+    if ($hermes) {
+        & $hermes.Source plugins enable focusflow | Out-Null
+    }
+}
 
 $eventPath = Join-Path $installDirectory "event.ps1"
 $startCommand = "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File `"$eventPath`" start"
@@ -81,3 +101,6 @@ Write-Host "Next: load the Chrome extension from:"
 Write-Host "  $installDirectory\chrome-extension" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Then open Codex CLI, run /hooks, and trust the two FocusFlow hooks."
+if (Test-Path -LiteralPath $hermesPluginSource) {
+    Write-Host "Hermes integration was installed. Restart Hermes before testing it."
+}
